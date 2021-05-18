@@ -1,0 +1,94 @@
+version: "3.9"
+
+services:
+
+  app-node:
+    build:
+      context: ./app
+      dockerfile: docker/development/node/Dockerfile
+#    command: ["yarn", "start"]
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./app:/app
+    ports:
+      - "3000:3000"
+    networks:
+      - chat-network
+
+  api-php-cli:
+    build:
+      context: ./api
+      dockerfile: docker/development/php-cli/Dockerfile
+    volumes:
+      - ./api:/app
+    depends_on:
+      - api-pgsql
+    networks:
+      - chat-network
+
+  api-php-fpm:
+    build:
+      context: ./api
+      dockerfile: docker/development/php-fpm/Dockerfile
+    volumes:
+      - ./api:/app
+    depends_on:
+      - api-pgsql
+    networks:
+      - chat-network
+
+  api-mailer:
+    image: mailhog/mailhog
+    tty: true
+    restart: on-failure
+    ports:
+      - "8025:8025"
+    networks:
+      - chat-network
+
+  api-redis:
+    image: redis:6.2.3
+    restart: always
+    command: [ "redis-server", "--appendonly", "yes" ]
+    environment:
+      ALLOW_EMPTY_PASSWORD: "yes"
+    networks:
+      - chat-network
+
+  api-pgsql:
+    image: postgres:13.2-alpine
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: app
+    volumes:
+      - api-postgres:/var/lib/postgresql/data
+    ports:
+      - "54321:5432"
+    networks:
+      - chat-network
+
+  api-nginx:
+    build:
+      context: ./api
+      dockerfile: docker/development/nginx/Dockerfile
+    ports:
+      - "80:80"
+      - "8022:8022"
+    volumes:
+      - ./api:/app
+    depends_on:
+      - api-redis
+      - api-php-fpm
+      - api-php-cli
+      - api-mailer
+    networks:
+      - chat-network
+
+networks:
+  chat-network:
+    driver: bridge
+
+volumes:
+  api-postgres:

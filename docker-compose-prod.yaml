@@ -1,0 +1,14 @@
+version: "3.7"
+
+services:
+
+  app-node:
+    build:
+      context: ./app
+      dockerfile: docker/production/node/Dockerfile
+    networks:
+      - chat-network
+
+networks:
+  chat-network:
+    driver: bridge
