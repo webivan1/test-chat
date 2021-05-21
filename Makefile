@@ -16,5 +16,23 @@ app-lint-fix:
 app-tests:
 	docker-compose -f docker-compose.yaml run --rm app-node yarn test --watchAll
 
+app-check-all: app-lint-check app-tests
+
 app-start:
 	docker-compose -f docker-compose.yaml run --rm app-node yarn start
+
+api-types:
+	docker-compose -f docker-compose.yaml run --rm api-php-cli composer psalm
+
+api-lint:
+	docker-compose -f docker-compose.yaml run --rm api-php-cli composer lint
+
+api-cs:
+	docker-compose -f docker-compose.yaml run --rm api-php-cli composer phpcs
+
+api-test:
+	docker-compose -f docker-compose.yaml run --rm api-php-cli composer test
+
+api-check-all: api-types api-lint api-cs api-test
+
+check-all: app-check-all api-check-all

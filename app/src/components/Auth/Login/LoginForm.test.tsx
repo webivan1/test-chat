@@ -1,35 +1,41 @@
 import mockState, { renderWithRedux } from "../../../store/mockState";
 import { LoginForm } from "./LoginForm";
 import userEvent from "@testing-library/user-event";
-import { act } from "@testing-library/react";
 
 describe('LoginForm', () => {
   test('Should be have 2 fields', () => {
-    const { getByTestId } = renderWithRedux(<LoginForm />, { initialState: {...mockState} })
+    const { getByTestId } = renderWithRedux(<LoginForm />, {
+      initialState: { ...mockState }
+    })
     expect(getByTestId('email')).toBeInTheDocument()
     expect(getByTestId('password')).toBeInTheDocument()
   })
 
   test('Check validation form', async () => {
-    const { getByTestId, getByText, debug } = renderWithRedux(<LoginForm />, {
+    const { getByTestId, findByTestId } = renderWithRedux(<LoginForm />, {
       initialState: { ...mockState }
     })
-    // const email = getByTestId('email');
-    // const password = getByTestId('password');
-    // const button = getByTestId('button');
-
-    // userEvent.type(email, '')
-    // userEvent.type(password, '')
 
     userEvent.click(getByTestId('button'))
 
-    debug()
+    const emailErrorField = await findByTestId('email')
+    const passwordErrorField = await findByTestId('email')
 
-    // await act(() => {
-    //
-    // })
+    expect(emailErrorField).toHaveClass('is-invalid')
+    expect(passwordErrorField).toHaveClass('is-invalid')
 
-    // expect(getByTestId('email')).toHaveClass('is-invalid')
-    // expect(getByTestId('password')).toHaveClass('is-invalid')
+    userEvent.type(emailErrorField, 'email@email.com')
+    userEvent.type(passwordErrorField, 'password')
+    userEvent.click(getByTestId('button'))
+
+    const emailField = await findByTestId('email')
+    const passwordField = await findByTestId('email')
+
+    expect(emailField).not.toHaveClass('is-invalid')
+    expect(passwordField).not.toHaveClass('is-invalid')
+  })
+
+  test('Check server response', () => {
+    // @todo
   })
 })

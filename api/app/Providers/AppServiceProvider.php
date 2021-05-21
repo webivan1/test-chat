@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Rules\CaptchaRule;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,6 +25,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Validator::extend('captcha', function ($attribute, $value) {
+            return (new CaptchaRule())->passes($attribute, $value);
+        }, (new CaptchaRule())->message());
     }
 }

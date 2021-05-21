@@ -1,0 +1,60 @@
+type User {
+    id: ID!
+    name: String!
+    email: String!
+    verified: Boolean!
+}
+
+input RegisterInput {
+    name: String! @rules(apply: ["required", "min:3", "max:100"])
+    email: String! @rules(apply: ["required", "email", "max:150", "unique:users,email"])
+    password: String! @rules(apply: ["required", "confirmed", "min:6", "max:64"])
+    password_confirmation: String! @rules(apply: ["required", "min:6", "max:64"])
+    captcha: String! @rules(apply: ["captcha"])
+}
+
+input LoginInput {
+    email: String! @rules(apply: ["required", "email", "max:150"])
+    password: String! @rules(apply: ["required", "confirmed", "min:6", "max:64"])
+    captcha: String! @rules(apply: ["captcha"])
+}
+
+input SendVerifyTokenInput {
+    captcha: String! @rules(apply: ["captcha"])
+}
+
+input VerifyEmailInput {
+    token: String! @rules(apply: ["required", "min:30", "max:80"])
+    captcha: String! @rules(apply: ["captcha"])
+}
+
+enum AuthResponseStatus {
+    SUCCESS @enum(value: "success")
+    FAIL @enum(value: "fail")
+}
+
+type AuthResponse {
+    status: AuthResponseStatus!
+    user: User
+    accessToken: String
+    errorMessage: String
+}
+
+type AuthResponse {
+    status: AuthResponseStatus!
+    user: User
+    accessToken: String
+    errorMessage: String
+}
+
+extend type Mutation {
+    register(input: RegisterInput! @spread): AuthResponse!
+    login(input: RegisterInput! @spread): AuthResponse!
+    sendVerifyToken(input: SendVerifyTokenInput! @spread): AuthResponse! @auth
+    verifyEmail(input: VerifyEmailInput! @spread): AuthResponse! @auth
+}
+
+extend type Query {
+    user: User @auth
+}
+

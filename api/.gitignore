@@ -11,3 +11,7 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
+/_lighthouse_ide_helper.php
+/programmatic-types.graphql
+/schema-directives.graphql
+/.phplint-cache
