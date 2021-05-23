@@ -1,18 +1,18 @@
-import { LoginFormType, LoginStateType } from './types'
-import { assign } from '../../user/userSlice'
+import { RegisterFormType, RegisterStateType } from './types'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AppThunk } from '../../store'
-import { captchaToken } from '../../../services/captcha'
-import { loginQuery } from './queries'
+import { registerQuery } from './queries'
+import { assign } from '../../user/userSlice'
 import { hide } from '../modal/authModalSlice'
+import { captchaToken } from '../../../services/captcha'
 
-const initialState: LoginStateType = {
+const initialState: RegisterStateType = {
   loader: false,
   error: null,
 }
 
-export const loginSlice = createSlice({
-  name: 'login',
+export const registerSlice = createSlice({
+  name: 'register',
   initialState,
   reducers: {
     startFetching: (state) => {
@@ -28,16 +28,14 @@ export const loginSlice = createSlice({
   },
 })
 
-export const { startFetching, stopFetching, setError } = loginSlice.actions
+export const { startFetching, stopFetching, setError } = registerSlice.actions
 
-export const fetchUserByCredentials = (credentials: LoginFormType): AppThunk => async (
-  dispatch
-) => {
+export const registerUserAsync = (form: RegisterFormType): AppThunk => async (dispatch) => {
   try {
     dispatch(startFetching())
-    const captcha = await captchaToken('login')
-    const { user, accessToken, errorMessage } = await loginQuery({
-      ...credentials,
+    const captcha = await captchaToken('register')
+    const { user, accessToken, errorMessage } = await registerQuery({
+      ...form,
       captcha,
     })
     if (errorMessage) {
@@ -55,4 +53,4 @@ export const fetchUserByCredentials = (credentials: LoginFormType): AppThunk => 
   }
 }
 
-export default loginSlice.reducer
+export default registerSlice.reducer

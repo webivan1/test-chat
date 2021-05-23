@@ -11,8 +11,8 @@ services:
     stdin_open: true
     volumes:
       - ./app:/app
-    ports:
-      - "3000:3000"
+#    ports:
+#      - "3000:3000"
     networks:
       - chat-network
 

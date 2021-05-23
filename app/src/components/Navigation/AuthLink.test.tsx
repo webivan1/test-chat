@@ -1,4 +1,4 @@
-import mockState, { renderWithRedux } from '../../store/mockState'
+import { renderWithRedux } from '../../store/mockState'
 import { AuthLink } from './AuthLink'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -6,14 +6,11 @@ import { AuthModal } from '../Auth/AuthModal/AuthModal'
 
 describe('AuthLink', () => {
   test('Check toggle auth modal link', () => {
-    const state = { ...mockState }
-
     renderWithRedux(
       <div>
         <AuthLink />
         <AuthModal />
-      </div>,
-      { initialState: state }
+      </div>
     )
 
     userEvent.click(screen.getByTestId('link'))
@@ -22,6 +19,8 @@ describe('AuthLink', () => {
 
     const modal = screen.queryByTestId('auth-modal')
     expect(modal).toBeInTheDocument()
-    expect(modal.parentNode).not.toHaveClass('show')
+    if (modal) {
+      expect(modal.parentNode).not.toHaveClass('show')
+    }
   })
 })

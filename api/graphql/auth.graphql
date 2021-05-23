@@ -15,7 +15,7 @@ input RegisterInput {
 
 input LoginInput {
     email: String! @rules(apply: ["required", "email", "max:150"])
-    password: String! @rules(apply: ["required", "confirmed", "min:6", "max:64"])
+    password: String! @rules(apply: ["required", "min:6", "max:64"])
     captcha: String! @rules(apply: ["captcha"])
 }
 
@@ -49,7 +49,7 @@ type AuthResponse {
 
 extend type Mutation {
     register(input: RegisterInput! @spread): AuthResponse!
-    login(input: RegisterInput! @spread): AuthResponse!
+    login(input: LoginInput! @spread): AuthResponse!
     sendVerifyToken(input: SendVerifyTokenInput! @spread): AuthResponse! @auth
     verifyEmail(input: VerifyEmailInput! @spread): AuthResponse! @auth
 }

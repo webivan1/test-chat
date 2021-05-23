@@ -13,8 +13,7 @@ describe('Navigation', () => {
     renderWithRedux(
       <BrowserRouter>
         <Navigation links={mockLinks} />
-      </BrowserRouter>,
-      { initialState: { ...mockState } }
+      </BrowserRouter>
     )
 
     mockLinks.forEach(({ href, content }) => {

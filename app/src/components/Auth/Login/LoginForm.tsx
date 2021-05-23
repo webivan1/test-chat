@@ -1,33 +1,33 @@
 import { FC } from 'react'
-import { Button, Form } from "react-bootstrap";
-import { useForm } from "react-hook-form";
-import { Input } from "../../UI/Form/Input/Input";
-
-type FormType = {
-  email: string
-  password: string
-}
+import { Alert, Button, Form } from 'react-bootstrap'
+import { Input } from '../../UI/Form/Input/Input'
+import { useLogin } from './useLogin'
+import { AuthModalForms } from '../../../store/auth/modal/types'
+import { emailRegex } from "../../../helpers/validation";
 
 export const LoginForm: FC = () => {
+  const {
+    error,
+    loader,
+    register,
+    formState: { errors },
+    handleSubmit,
+    handleForm,
+    handleChangeForm,
+  } = useLogin()
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormType>({
-    defaultValues: {
-      email: '',
-      password: ''
-    }
-  });
-
-  const handleForm = (form: FormType) => {
-    console.log(form);
-  }
+  const moveToRegisterForm = () => handleChangeForm(AuthModalForms.register)
+  const moveToRestorePasswordForm = () => handleChangeForm(AuthModalForms.password)
 
   return (
     <Form data-testid="login" onSubmit={handleSubmit(handleForm)}>
+      <h3 className="text-center mb-2">Sigh in</h3>
+
       <Input
         name="email"
-        label="Email or username"
+        label="Email"
         type="text"
-        register={register('email', { required: true })}
+        register={register('email', { required: true, pattern: emailRegex, maxLength: 150 })}
         invalid={!!errors.email}
         errorMessage="Email is not correct"
       />
@@ -36,14 +36,32 @@ export const LoginForm: FC = () => {
         name="password"
         label="Password"
         type="password"
-        register={register('password', { required: true })}
+        register={register('password', { required: true, minLength: 6, maxLength: 64 })}
         invalid={!!errors.password}
         errorMessage="Password length must be 6 or more symbols"
       />
 
-      <Button data-testid="button" variant="primary" type="submit">
-        Submit
-      </Button>
+      {error && (
+        <Alert data-testid="error" variant="danger">
+          {error}
+        </Alert>
+      )}
+
+      <div className="text-center">
+        <Button disabled={loader} data-testid="button" variant="primary" type="submit">
+          Login
+        </Button>
+
+        <div className="mt-2">
+          <Button variant="link" size="sm" onClick={moveToRegisterForm}>
+            You can create an account
+          </Button>
+          <br />
+          <Button variant="link" size="sm" onClick={moveToRestorePasswordForm}>
+            Did you forget a password?
+          </Button>
+        </div>
+      </div>
     </Form>
   )
 }
