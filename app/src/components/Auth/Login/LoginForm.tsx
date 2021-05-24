@@ -3,7 +3,7 @@ import { Alert, Button, Form } from 'react-bootstrap'
 import { Input } from '../../UI/Form/Input/Input'
 import { useLogin } from './useLogin'
 import { AuthModalForms } from '../../../store/auth/modal/types'
-import { emailRegex } from "../../../helpers/validation";
+import { emailRegex } from '../../../helpers/validation'
 
 export const LoginForm: FC = () => {
   const {

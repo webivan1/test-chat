@@ -1,7 +1,7 @@
 import { renderWithRedux } from '../../../store/mockState'
 import { LoginForm } from './LoginForm'
 import userEvent from '@testing-library/user-event'
-import { act, screen } from '@testing-library/react'
+import { act, screen, fireEvent } from '@testing-library/react'
 import { loginQuery } from '../../../store/auth/login/queries'
 
 jest.mock('../../../store/auth/login/queries')
@@ -14,9 +14,7 @@ describe('LoginForm', () => {
   })
 
   test('Check validation form', async () => {
-    await act(async () => {
-      renderWithRedux(<LoginForm />)
-    })
+    renderWithRedux(<LoginForm />)
 
     userEvent.click(screen.getByTestId('button'))
 
@@ -26,8 +24,10 @@ describe('LoginForm', () => {
     expect(email).toHaveClass('is-invalid')
     expect(password).toHaveClass('is-invalid')
 
-    userEvent.type(email, 'test@test.com')
-    userEvent.type(password, '123456')
+    await act(async () => {
+      userEvent.type(email, 'test@test.com')
+      userEvent.type(password, '123456')
+    })
 
     email = await screen.findByTestId('email')
     password = await screen.findByTestId('password')
@@ -37,9 +37,7 @@ describe('LoginForm', () => {
   })
 
   test('Check error response from server', async () => {
-    await act(async () => {
-      renderWithRedux(<LoginForm />)
-    })
+    renderWithRedux(<LoginForm />)
 
     // @ts-ignore
     loginQuery.mockResolvedValueOnce(
@@ -50,9 +48,11 @@ describe('LoginForm', () => {
       })
     )
 
-    userEvent.type(screen.getByTestId('email'), 'test@test.com')
-    userEvent.type(screen.getByTestId('password'), '123456')
-    userEvent.click(screen.getByTestId('button'))
+    await act(async () => {
+      userEvent.type(screen.getByTestId('email'), 'test@test.com')
+      userEvent.type(screen.getByTestId('password'), '123456')
+      userEvent.click(screen.getByTestId('button'))
+    })
 
     const errorMessage = await screen.findByTestId('error')
 
@@ -60,9 +60,7 @@ describe('LoginForm', () => {
   })
 
   test('Check successfully response from server', async () => {
-    await act(async () => {
-      renderWithRedux(<LoginForm />)
-    })
+    renderWithRedux(<LoginForm />)
 
     // @ts-ignore
     loginQuery.mockResolvedValueOnce(
@@ -77,9 +75,11 @@ describe('LoginForm', () => {
       })
     )
 
-    userEvent.type(screen.getByTestId('email'), 'test@test.com')
-    userEvent.type(screen.getByTestId('password'), '123456')
-    userEvent.click(screen.getByTestId('button'))
+    await act(async () => {
+      userEvent.type(screen.getByTestId('email'), 'test@test.com')
+      userEvent.type(screen.getByTestId('password'), '123456')
+      userEvent.click(screen.getByTestId('button'))
+    })
 
     const errorMessage = await screen.queryByTestId('error')
 

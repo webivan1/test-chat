@@ -20,10 +20,12 @@ export const Input: FC<ValidateInputPropsType> = ({
   ...inputProps
 }) => (
   <Form.Group>
-    {label && <Form.Label>{label}</Form.Label>}
+    {label && <Form.Label data-testid={`label-${name}`}>{label}</Form.Label>}
     <Form.Control {...inputProps} {...register} isInvalid={invalid} data-testid={name} />
     {errorMessage && invalid && (
-      <Form.Control.Feedback type="invalid">{errorMessage}</Form.Control.Feedback>
+      <Form.Control.Feedback data-testid={`feedback-${name}`} type="invalid">
+        {errorMessage}
+      </Form.Control.Feedback>
     )}
   </Form.Group>
 )

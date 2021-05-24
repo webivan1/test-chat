@@ -16,11 +16,11 @@ describe('RegisterForm', () => {
   })
 
   test('Check validation form', async () => {
-    await act(async () => {
-      renderWithRedux(<RegisterForm />)
-    })
+    renderWithRedux(<RegisterForm />)
 
-    userEvent.click(screen.getByTestId('button'))
+    await act(async () => {
+      userEvent.click(screen.getByTestId('button'))
+    })
 
     let email = await screen.findByTestId('email')
     let name = await screen.findByTestId('name')
@@ -32,10 +32,12 @@ describe('RegisterForm', () => {
     expect(password).toHaveClass('is-invalid')
     expect(passwordConfirmation).toHaveClass('is-invalid')
 
-    userEvent.type(email, 'test@test.com')
-    userEvent.type(name, 'Test user')
-    userEvent.type(password, '123456')
-    userEvent.type(passwordConfirmation, '123456')
+    await act(async () => {
+      userEvent.type(email, 'test@test.com')
+      userEvent.type(name, 'Test user')
+      userEvent.type(password, '123456')
+      userEvent.type(passwordConfirmation, '123456')
+    })
 
     email = await screen.findByTestId('email')
     name = await screen.findByTestId('name')
@@ -49,9 +51,7 @@ describe('RegisterForm', () => {
   })
 
   test('Check error response from server', async () => {
-    await act(async () => {
-      renderWithRedux(<RegisterForm />)
-    })
+    renderWithRedux(<RegisterForm />)
 
     // @ts-ignore
     registerQuery.mockResolvedValueOnce(
@@ -62,11 +62,13 @@ describe('RegisterForm', () => {
       })
     )
 
-    userEvent.type(screen.getByTestId('email'), 'test@test.com')
-    userEvent.type(screen.getByTestId('name'), 'Test user')
-    userEvent.type(screen.getByTestId('password'), '123456')
-    userEvent.type(screen.getByTestId('password_confirmation'), '123456')
-    userEvent.click(screen.getByTestId('button'))
+    await act(async () => {
+      userEvent.type(screen.getByTestId('email'), 'test@test.com')
+      userEvent.type(screen.getByTestId('name'), 'Test user')
+      userEvent.type(screen.getByTestId('password'), '123456')
+      userEvent.type(screen.getByTestId('password_confirmation'), '123456')
+      userEvent.click(screen.getByTestId('button'))
+    })
 
     const errorMessage = await screen.findByTestId('error')
 
@@ -74,9 +76,7 @@ describe('RegisterForm', () => {
   })
 
   test('Check successfully response from server', async () => {
-    await act(async () => {
-      renderWithRedux(<RegisterForm />)
-    })
+    renderWithRedux(<RegisterForm />)
 
     // @ts-ignore
     registerQuery.mockResolvedValueOnce(
@@ -91,11 +91,13 @@ describe('RegisterForm', () => {
       })
     )
 
-    userEvent.type(screen.getByTestId('email'), 'test@test.com')
-    userEvent.type(screen.getByTestId('name'), 'Test user')
-    userEvent.type(screen.getByTestId('password'), '123456')
-    userEvent.type(screen.getByTestId('password_confirmation'), '123456')
-    userEvent.click(screen.getByTestId('button'))
+    await act(async () => {
+      userEvent.type(screen.getByTestId('email'), 'test@test.com')
+      userEvent.type(screen.getByTestId('name'), 'Test user')
+      userEvent.type(screen.getByTestId('password'), '123456')
+      userEvent.type(screen.getByTestId('password_confirmation'), '123456')
+      userEvent.click(screen.getByTestId('button'))
+    })
 
     const errorMessage = await screen.queryByTestId('error')
 

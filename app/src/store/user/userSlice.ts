@@ -1,6 +1,8 @@
 import { UserAssignType, UserStateType, UserType } from './types'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AppThunk } from '../store'
+import { setError, startFetching, stopFetching } from '../auth/login/loginSlice'
+import { autoLoginQuery } from './queries'
 import Cookies from 'js-cookie'
 
 const storageTokenName: string = process.env.REACT_APP_STORAGE_TOKEN_NAME ?? 'user-token'
@@ -47,17 +49,16 @@ export const userSlice = createSlice({
 export const { assign, assignWithoutToken, logout } = userSlice.actions
 
 export const autoFetchUser = (): AppThunk => async (dispatch) => {
-  const token = Cookies.get(storageTokenName)
-  if (token) {
-    try {
-      // dispatch() LOADING
-      // const user: UserType = await (Promise.resolve({ username: 'Test user auto', id: '1' }))
-      // dispatch(assignWithoutToken(user))
-    } catch (e) {
-      // dispatch()
-    } finally {
-      // dispatch()
+  try {
+    dispatch(startFetching())
+    const user = await autoLoginQuery(Cookies.get(storageTokenName))
+    if (user) {
+      dispatch(assignWithoutToken(user))
     }
+  } catch (e) {
+    dispatch(setError(e.message))
+  } finally {
+    dispatch(stopFetching())
   }
 }
 

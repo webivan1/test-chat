@@ -1,10 +1,11 @@
 import React, { FC } from 'react'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { Navigation } from './components/Navigation/Navigation'
+import { AuthModal } from './components/Auth/AuthModal/AuthModal'
+import { AutoLogin } from './components/Auth/AutoLogin/AutoLogin'
 // Screens
 import { Home } from './screens/Home'
 import { About } from './screens/About'
-import { AuthModal } from './components/Auth/AuthModal/AuthModal'
 
 export const App: FC = () => (
   <Router>
@@ -16,6 +17,7 @@ export const App: FC = () => (
     />
 
     <AuthModal />
+    <AutoLogin />
 
     <Switch>
       <Route path="/" exact={true}>
